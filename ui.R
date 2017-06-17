@@ -1,3 +1,5 @@
+# ui.R - Bill White - 6/15/17
+#
 # This is the user-interface definition of a Shiny web application.
 # You can find out more about building applications with Shiny here:
 #
@@ -9,15 +11,15 @@ library(shiny)
 shinyUI(fluidPage(
 
   # Application title
-  titlePanel("RS# to Gene biomaRt Lookup"),
+  titlePanel("RefSNP ID to Gene Symbol biomaRt Lookup"),
 
-  # Sidebar with a slider input for number of bins
+  # Sidebar on left side
   sidebarLayout(
     sidebarPanel(
-      fileInput("snps.file", label=h3("SNPs file, text RefSNP IDs one-per-line"))
+      fileInput("snps.file", label="SNPs file with one RefSNP ID per line")
     ),
 
-    # Show a plot of the generated distribution
+    # Main panel on right side
     mainPanel(
       tableOutput("lookup.results")
     )
