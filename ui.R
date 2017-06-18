@@ -16,7 +16,12 @@ shinyUI(fluidPage(
   # Sidebar on left side
   sidebarLayout(
     sidebarPanel(
-      fileInput("snps.file", label="SNPs file with one RefSNP ID per line")
+      radioButtons("snp.src", "SNP source:",
+                   c("List" = "list.src",
+                     "File upload" = "file.src")),
+      textAreaInput("snps.text", label="SNPs list, one per line", value="rs1048194", rows=10, resize="both"),
+      fileInput("snps.file", label="OR, SNPs file with one RefSNP ID per line"),
+      verbatimTextOutput("stdout.text")
     ),
 
     # Main panel on right side
