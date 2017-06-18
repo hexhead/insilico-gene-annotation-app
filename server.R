@@ -10,6 +10,17 @@ library(biomaRt)
 
 shinyServer(function(input, output, session) {
 
+  output$snp.input <- renderUI({
+    validate(
+      need(!is.null(input$snp.src), "please select a SNP source")
+    )
+    if(input$snp.src == "list.src") {
+      textAreaInput("snps.text", label="SNPs list, one per line", value="rs1048194", rows=10, resize="both")
+    } else {
+      fileInput("snps.file", label="SNPs file with one RefSNP ID per line")
+    }
+  })
+  
   output$stdout.text <- renderPrint({
     the.snps <- NULL
     if(input$snp.src == "list.src") {
@@ -74,6 +85,6 @@ shinyServer(function(input, output, session) {
     snp.genes.annot <- snp.genes.annot[snp.genes.annot$Gene != "", ]
     # sort data frame returned by snp then gene ID
     snp.genes.annot[order(snp.genes.annot$RefSNP, snp.genes.annot$Ensembl), ]
-  })
+  }, bordered=TRUE)
 
 })

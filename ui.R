@@ -11,7 +11,7 @@ library(shiny)
 shinyUI(fluidPage(
 
   # Application title
-  titlePanel("RefSNP ID to Gene Symbol biomaRt Lookup"),
+  titlePanel("RefSNP ID to Gene Symbol"),
 
   # Sidebar on left side
   sidebarLayout(
@@ -19,11 +19,15 @@ shinyUI(fluidPage(
       radioButtons("snp.src", "SNP source:",
                    c("List" = "list.src",
                      "File upload" = "file.src")),
-      textAreaInput("snps.text", label="SNPs list, one per line", value="rs1048194", rows=10, resize="both"),
-      fileInput("snps.file", label="OR, SNPs file with one RefSNP ID per line"),
+      uiOutput("snp.input"),
+      # conditionalPanel(
+      #   condition="snp.src == 'list.src'", 
+      #   textAreaInput("snps.text", label="SNPs list, one per line", value="rs1048194", rows=10, resize="both")),
+      # conditionalPanel(
+      #   condition="snp.src == 'file.src'", 
+      #   fileInput("snps.file", label="SNPs file with one RefSNP ID per line")),
       verbatimTextOutput("stdout.text")
     ),
-
     # Main panel on right side
     mainPanel(
       tableOutput("lookup.results")
