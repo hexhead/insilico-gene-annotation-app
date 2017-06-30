@@ -17,8 +17,8 @@ shinyUI(fluidPage(
   sidebarLayout(
     sidebarPanel(
       radioButtons("snp.src", "SNP source:",
-                   c("List" = "list.src",
-                     "File upload" = "file.src")),
+                   c("List"="list.src",
+                     "File upload"="file.src")),
       uiOutput("snp.input"),
       # conditionalPanel(
       #   condition="snp.src == 'list.src'", 
@@ -26,7 +26,8 @@ shinyUI(fluidPage(
       # conditionalPanel(
       #   condition="snp.src == 'file.src'", 
       #   fileInput("snps.file", label="SNPs file with one RefSNP ID per line")),
-      verbatimTextOutput("stdout.text")
+      verbatimTextOutput("stdout.text"),
+      downloadButton('download.btn', 'Download Results Table as Tab-delimited Text')
     ),
     # Main panel on right side
     mainPanel(

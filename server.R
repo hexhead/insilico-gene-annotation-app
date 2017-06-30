@@ -9,7 +9,8 @@ library(shiny)
 library(biomaRt) 
 
 shinyServer(function(input, output, session) {
-
+  the.snps <- NULL
+  
   output$snp.input <- renderUI({
     validate(
       need(!is.null(input$snp.src), "please select a SNP source")
@@ -21,32 +22,10 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  output$stdout.text <- renderPrint({
-    the.snps <- NULL
+  computed.data <- reactive({
     if(input$snp.src == "list.src") {
       if(!is.null(input$snps.text)) {
         the.snps <- unlist(strsplit(input$snps.text, "\n"))
-      }
-    } else {
-      if(input$snp.src == "file.src") {
-        if(!is.null(input$snps.file)) {
-          the.snps <- read.table(input$snps.file$datapath, header=FALSE, stringsAsFactors=FALSE)[, 1]
-        }
-      }
-    }
-    if(is.null(the.snps)) {
-      return(NULL)
-    } 
-    cat("Number of SNPs read:", length(the.snps), "\n")
-  })
-  
-  output$lookup.results <- renderTable({
-    the.snps <- NULL
-    if(input$snp.src == "list.src") {
-      if(!is.null(input$snps.text)) {
-        print(input$snps.text)
-        the.snps <- unlist(strsplit(input$snps.text, "\n"))
-        print(the.snps)
       }
     } else {
       if(input$snp.src == "file.src") {
@@ -85,6 +64,23 @@ shinyServer(function(input, output, session) {
     snp.genes.annot <- snp.genes.annot[snp.genes.annot$Gene != "", ]
     # sort data frame returned by snp then gene ID
     snp.genes.annot[order(snp.genes.annot$RefSNP, snp.genes.annot$Ensembl), ]
-  }, bordered=TRUE)
-
+  })
+  
+  output$stdout.text <- renderPrint({
+    cat("Number of records found:", nrow(computed.data()), "\n")
+  })
+  
+  output$lookup.results <- renderTable({ 
+    computed.data() 
+    }, 
+    bordered=TRUE
+  )
+  
+  output$download.btn <- downloadHandler(
+    filename = function() { paste("snp-to-gene", ".tab", sep="") },
+    content = function(tmp.file) { 
+      write.table(computed.data(), file=tmp.file, sep="\t", quote=FALSE, 
+                  row.names=FALSE, col.names=TRUE) 
+    }
+  )
 })
